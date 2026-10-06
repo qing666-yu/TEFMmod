@@ -5,12 +5,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    
     - name: Unzip TEFKernel source
       run: unzip tefkernel.zip
+      
     - name: Setup Android NDK
-      uses: android-actions/setup-android@v3
+      uses: nttld/setup-ndk@v1
       with:
-        ndk-version: '26.1.10909125'
+        ndk-version: r26b
+        
     - name: Build TEFKernel dependencies
       run: |
         cd tefkernel
@@ -20,6 +23,7 @@ jobs:
           -DANDROID_PLATFORM=android-21 \
           -DCMAKE_BUILD_TYPE=Release
         cmake --build build -j$(nproc)
+        
     - name: Compile your Mod
       run: |
         clang --target=aarch64-linux-android21 \
@@ -30,6 +34,7 @@ jobs:
           -o libmy_first_mod.so my_first_mod.c \
           -ldobby -lffi -llog \
           -Wl,--unresolved-symbols=ignore-all
+          
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
       with:
