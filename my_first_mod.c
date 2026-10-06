@@ -37,19 +37,19 @@ static bool test_module_init(module_entry_t *entry) {
     LOGI("Logs directory: %s", entry->logs_dir);
 
     /* 尝试安装 Hook（修正2：删掉多余的最后一个参数，只传3个） */
-    patch_hook_id_t hook_id = patchlib_install_prepost_hook(
-        NULL,           // 目标函数句柄（暂时传 NULL）
-        my_hook_prefix, // 前缀 Hook 函数
-        NULL            // 后缀 Hook（可选）
-    );
+    //patch_hook_id_t hook_id = patchlib_install_prepost_hook(
+      //  NULL,           // 目标函数句柄（暂时传 NULL）
+       // my_hook_prefix, // 前缀 Hook 函数
+       // NULL            // 后缀 Hook（可选）
+    //);
 
-    if (hook_id == PATCH_HOOK_INVALID_ID) {
-        LOGE("Hook 安装失败");
-    } else {
-        LOGI("Hook 安装成功，ID: %d", hook_id);
-    }
-    return true;
-}
+   // if (hook_id == PATCH_HOOK_INVALID_ID) {
+    //    LOGE("Hook 安装失败");
+    //} else {
+    //    LOGI("Hook 安装成功，ID: %d", hook_id);
+    //}
+    //return true;
+//}
 
 /* 清理模块 */
 static bool test_module_cleanup(module_entry_t *entry) {
