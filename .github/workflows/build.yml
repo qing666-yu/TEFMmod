@@ -33,7 +33,7 @@ jobs:
         echo "Dobby library found in: $DOBBY_PATH"
         echo "FFI library found in: $FFI_PATH"
         
-        # 重新编译，去掉 -lgcc，加入正确的库路径
+        # 重新编译，链接路径已修正，去掉了 -lgcc
         clang --target=aarch64-linux-android21 \
           --sysroot=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot \
           -I$GITHUB_WORKSPACE/tefkernel/include \
