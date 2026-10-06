@@ -33,13 +33,19 @@ jobs:
         echo "Dobby library found in: $DOBBY_PATH"
         echo "FFI library found in: $FFI_PATH"
         
-        # 重新编译，链接路径已修正，去掉了 -lgcc
+        # 【关键修复】创建一个假的 libgcc.a，指向 NDK 的正确内置库
+        BUILTINS_LIB=$(find $ANDROID_NDK_HOME -name "libclang_rt.builtins-aarch64-android.a" | head -n 1)
+        mkdir -p /tmp/fake_gcc
+        ln -sf $BUILTINS_LIB /tmp/fake_gcc/libgcc.a
+        
+        # 编译时把假库目录加入到链接路径中
         clang --target=aarch64-linux-android21 \
           --sysroot=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot \
           -I$GITHUB_WORKSPACE/tefkernel/include \
           -L$DOBBY_PATH \
           -L$FFI_PATH \
           -L$GITHUB_WORKSPACE/tefkernel/build \
+          -L/tmp/fake_gcc \
           -shared -fPIC \
           -o libmy_first_mod.so my_first_mod.c \
           -ldobby -lffi -llog \
