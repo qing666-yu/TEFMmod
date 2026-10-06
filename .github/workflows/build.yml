@@ -24,11 +24,21 @@ jobs:
           -DCMAKE_BUILD_TYPE=Release
         cmake --build build -j$(nproc)
         
-    - name: Compile your Mod
+    - name: Find and Compile your Mod
       run: |
+        # 自动寻找 libdobby.a 和 libffi.a 所在的目录
+        DOBBY_PATH=$(find $GITHUB_WORKSPACE/tefkernel/build -name "libdobby.a" | head -n 1 | xargs dirname)
+        FFI_PATH=$(find $GITHUB_WORKSPACE/tefkernel/build -name "libffi.a" | head -n 1 | xargs dirname)
+        
+        echo "Dobby library found in: $DOBBY_PATH"
+        echo "FFI library found in: $FFI_PATH"
+        
+        # 重新编译，去掉 -lgcc，加入正确的库路径
         clang --target=aarch64-linux-android21 \
           --sysroot=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot \
           -I$GITHUB_WORKSPACE/tefkernel/include \
+          -L$DOBBY_PATH \
+          -L$FFI_PATH \
           -L$GITHUB_WORKSPACE/tefkernel/build \
           -shared -fPIC \
           -o libmy_first_mod.so my_first_mod.c \
